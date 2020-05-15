@@ -4,9 +4,37 @@
 #include "ray.h"
 using namespace std;
 
+bool hit_sphere(const point3& center, float radius, const ray& r) {
+    /**
+     * Note: we want the equation for the sphere in terms of vectors so we can do the math under the hood in vec3
+     * Given Center = (Cx, Cy, Cz) and Point = (x, y, z) the vector from center to point is (P-C)
+     * Therefore (P-C)* (P-C) = (x-Cx)**2 + (y-Cy)**2 + (z-Cz)**2 = r**2
+     * If we want to we want to know if a ray hits the spere then for some t, (P(t) - C) * (P(t) - C)  must equal r**2
+     * Expanding P(t) gets us A + tb - C
+     * Therefore with the dot product and using vector algebra, the final equation is:
+     * 
+     * t**2 * b + 2tb * (A - C) + (A - C) * (A - C) - r**2 = 0 (quadratic)
+     * either no solution (no hit), 1 (tangent) or 2 (pass through)
+    **/
+
+    // get A + tb -C 
+    vec3 oc = r.origin() - center;
+    // construct a, b, and c in quadratic formula
+
+    auto a = dot(r.direction(), r.direction());
+    auto b = 2.0 * dot(oc, r.direction());
+    auto c = dot (oc, oc) - radius * radius;
+    // checking if quadratic formula would return positive or negative number (same as hit or miss)
+    auto discriminant = b*b - 4*a*c;
+    return discriminant > 0;
+    
+}
 color ray_color(const ray& r) {
     // scales y based on height using the unit vector for direction.
     // blue to white from highest y val to lowest
+    if (hit_sphere(point3(0,0,-1), 0.5, r)) {
+        return color(1,0,0);
+    }
     vec3 unit_direction = unit_vector(r.direction());
     auto t = 0.5 * (unit_direction.y() + 1.0);
     return (1.0 - t) * color(1.0, 1.0, 1.0) + t*color(0.5, 0.7, 1.0);
