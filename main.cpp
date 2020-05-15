@@ -20,9 +20,11 @@ bool hit_sphere(const point3& center, float radius, const ray& r) {
     // get A + tb -C 
     vec3 oc = r.origin() - center;
     // construct a, b, and c in quadratic formula
-
+    // b * b
     auto a = dot(r.direction(), r.direction());
+    // 2b * (A - C)
     auto b = 2.0 * dot(oc, r.direction());
+    // (A - C) * (A - C) - r**2
     auto c = dot (oc, oc) - radius * radius;
     // checking if quadratic formula would return positive or negative number (same as hit or miss)
     auto discriminant = b*b - 4*a*c;
