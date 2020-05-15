@@ -6,66 +6,66 @@
 #include <iostream>
 
 class vec3 {
-public:
+    public:
 
-    // Array to be used as vector
+        // Array to be used as vector
 
-    float e[3];
+        float e[3];
 
-    // setting up 3d vec
-    vec3() : e{0,0,0} {}
-    vec3(float e0, float e1, float e2) { 
-        e[0] = e0; 
-        e[1] = e1; 
-        e[2] = e2;
-    }
-
-    // assiging numbers in vector to a cordinate and a color
-    // this vec3 class will be used for both rgb colors and locations
-    inline float x() const { return e[0]; }
-    inline float y() const { return e[1]; }
-    inline float z() const { return e[2]; }
-    inline float r() const { return e[0]; }
-    inline float g() const { return e[1]; }
-    inline float b() const { return e[2]; }
-
-    // overloading the + = and [] o[]
-    inline const vec3& operator+() const { return *this; }
-    inline vec3 operator-() const { return vec3(-e[0], -e[1], -e[2]); }
-    inline float operator[](int i) const { return e[i]; }
-    inline float& operator[](int i) { return e[i]; }
-
-    // for operator assignment.
-        vec3& operator+=(const vec3 &v) {
-            e[0] += v.e[0];
-            e[1] += v.e[1];
-            e[2] += v.e[2];
-            return *this;
+        // setting up 3d vec
+        vec3() : e{0,0,0} {}
+        vec3(float e0, float e1, float e2) { 
+            e[0] = e0; 
+            e[1] = e1; 
+            e[2] = e2;
         }
 
-        vec3& operator*=(const float t) {
-            e[0] *= t;
-            e[1] *= t;
-            e[2] *= t;
-            return *this;
+        // assiging numbers in vector to a cordinate and a color
+        // this vec3 class will be used for both rgb colors and locations
+        inline float x() const { return e[0]; }
+        inline float y() const { return e[1]; }
+        inline float z() const { return e[2]; }
+        inline float r() const { return e[0]; }
+        inline float g() const { return e[1]; }
+        inline float b() const { return e[2]; }
+
+        // overloading the + = and [] o[]
+        inline const vec3& operator+() const { return *this; }
+        inline vec3 operator-() const { return vec3(-e[0], -e[1], -e[2]); }
+        inline float operator[](int i) const { return e[i]; }
+        inline float& operator[](int i) { return e[i]; }
+
+        // for operator assignment.
+            vec3& operator+=(const vec3 &v) {
+                e[0] += v.e[0];
+                e[1] += v.e[1];
+                e[2] += v.e[2];
+                return *this;
+            }
+
+            vec3& operator*=(const float t) {
+                e[0] *= t;
+                e[1] *= t;
+                e[2] *= t;
+                return *this;
+            }
+
+            vec3& operator/=(const float t) {
+                return *this *= 1/t;
+            }
+
+
+        // get magnitude of vector
+        inline float length() const {
+            return sqrt(e[0] * e[0] + e[1] * e[1] + e[2] * e[2]);
         }
 
-        vec3& operator/=(const float t) {
-            return *this *= 1/t;
+        inline float squared_length() const {
+            return (e[0] * e[0] + e[1] * e[1] + e[2] * e[2]);
         }
 
-
-    // get magnitude of vector
-    inline float length() const {
-        return sqrt(e[0] * e[0] + e[1] * e[1] + e[2] * e[2]);
-    }
-
-    inline float squared_length() const {
-        return (e[0] * e[0] + e[1] * e[1] + e[2] * e[2]);
-    }
-
-    inline void make_unit_vector();
-    
+        inline void make_unit_vector();
+        
 
 };
 using point3 = vec3;
