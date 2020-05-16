@@ -4,7 +4,7 @@
 #include "ray.h"
 using namespace std;
 
-bool hit_sphere(const point3& center, float radius, const ray& r) {
+float hit_sphere(const point3& center, float radius, const ray& r) {
     /**
      * Note: we want the equation for the sphere in terms of vectors so we can do the math under the hood in vec3
      * Given Center = (Cx, Cy, Cz) and Point = (x, y, z) the vector from center to point is (P-C)
@@ -15,6 +15,7 @@ bool hit_sphere(const point3& center, float radius, const ray& r) {
      * 
      * t**2 * b + 2tb * (A - C) + (A - C) * (A - C) - r**2 = 0 (quadratic)
      * either no solution (no hit), 1 (tangent) or 2 (pass through)
+     * A vector dotted with itself is equal to its squared length therefore
     **/
 
     // get A + tb -C 
@@ -22,23 +23,36 @@ bool hit_sphere(const point3& center, float radius, const ray& r) {
     // construct a, b, and c in quadratic formula
     // b * b
     auto a = dot(r.direction(), r.direction());
-    // 2b * (A - C)
+    // 2b * (A - C), could also do half b and simplify the quadratic eq
     auto b = 2.0 * dot(oc, r.direction());
     // (A - C) * (A - C) - r**2
     auto c = dot (oc, oc) - radius * radius;
     // checking if quadratic formula would return positive or negative number (same as hit or miss)
     auto discriminant = b*b - 4*a*c;
-    return discriminant > 0;
+
+    // finish out the quadratic formula
+    if(discriminant < 0) {
+        return -1.0;
+    } else {
+        // returning the hit point (value of t)
+        return (-b - sqrt(discriminant)) / (2.0 * a);
+    }
     
 }
 color ray_color(const ray& r) {
-    // scales y based on height using the unit vector for direction.
-    // blue to white from highest y val to lowest
-    if (hit_sphere(point3(0,0,-1), 0.5, r)) {
-        return color(1,0,0);
+    auto t = hit_sphere(point3(0, 0 , -1), 0.5, r);
+
+    // check for hit
+    if (t > 0.0) {
+        // find the unit vector of P - C 
+        vec3 N = unit_vector(r.at(t) - vec3(0,0,-1));
+        // return color based on that position
+        return 0.5 * color(N.r()+1, N.y()+1, N.z()+1);
     }
+    
+    // if there is not a hit, bend blue to white based on the height in y of the unit vector
     vec3 unit_direction = unit_vector(r.direction());
-    auto t = 0.5 * (unit_direction.y() + 1.0);
+    t = 0.5*(unit_direction.y() + 1);
     return (1.0 - t) * color(1.0, 1.0, 1.0) + t*color(0.5, 0.7, 1.0);
 }
 
